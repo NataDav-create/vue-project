@@ -1,22 +1,33 @@
 <template>
   <v-container>
-    <PhotoForm @addPhoto="addPhoto" />
+    <PhotoForm v-if="photos.length < 11" @addPhoto="addPhoto" />
+    <div v-else>You cant add any more photos</div>
     <v-row>
-      <Photo :key="photo" v-for="photo in photos" v-bind:photo="photo" />
+      <Photo
+        @openPhoto="openPhoto"
+        :key="photo"
+        v-for="photo in photos"
+        v-bind:photo="photo"
+      />
     </v-row>
+    <PhotoDialog :photo="currentPhoto" v-model="dialogVisible" />
   </v-container>
 </template>
 
 <script>
 import Photo from "@/components/photo/Photo";
 import PhotoForm from "@/components/photo/PhotoForm";
+import PhotoDialog from "@/components/photo/PhotoDialog";
 export default {
   components: {
     Photo,
     PhotoForm,
+    PhotoDialog,
   },
   data: () => ({
     photos: [],
+    currentPhoto: {},
+    dialogVisible: false,
   }),
   mounted() {
     this.fetchTodo();
@@ -29,6 +40,10 @@ export default {
     },
     addPhoto(photo) {
       this.photos.push(photo);
+    },
+    openPhoto(photo) {
+      this.currentPhoto = photo;
+      this.dialogVisible = true;
     },
   },
 };
